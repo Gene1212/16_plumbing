@@ -9,14 +9,17 @@
 int main()
 {
     int fd;
+    int fd1;
     char input[100];
     mkfifo("one", 0666);
+    mkfifo("two", 0666);
+
+    fd = open("one", O_RDONLY);
+    fd1 = open("two", O_WRONLY);
 
     while (1)
     {
-        fd = open("one", O_RDONLY);
         read(fd, input, sizeof(input));
-        close(fd);
 
         char *p = input;
         while (*p)
@@ -25,9 +28,7 @@ int main()
             p++;
         }
 
-        fd = open("one", O_WRONLY);
-        write(fd, input, sizeof(input));
-        close(fd);
+        write(fd1, input, sizeof(input));
     }
 
     return 0;

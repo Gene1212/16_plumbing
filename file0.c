@@ -11,25 +11,26 @@ int main()
 {
 
     int fd;
+    int fd1;
     char input[100];
-    int x = mkfifo("one", 0666);
-    //printf("%s\n", strerror(x));
+    mkfifo("one", 0666);
+    mkfifo("two", 0666);
+    fd = open("one", O_WRONLY);
+    fd1 = open("two", O_RDONLY);
+
+    printf("Pipe connected\n");
     printf("Type in your input\n");
 
     while (1)
     {
-
-        fd = open("one", O_WRONLY);
         fgets(input, sizeof(input), stdin);
-
         write(fd, input, sizeof(input));
-        close(fd);
 
-        fd = open("one", O_RDONLY);
-        read(fd, input, sizeof(input));
+        read(fd1, input, sizeof(input));
         printf("%s\n", input);
 
-        close(fd);
+        remove("one");
+        remove("two");
     }
 
     return 0;
